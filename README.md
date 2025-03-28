@@ -19,7 +19,7 @@ Simply run the following command to start the application:
 docker-compose up -d
 ```
 
-### URLs to follow
+### Ports to follow
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:8000`
 
@@ -33,3 +33,6 @@ docker-compose up -d
 2. Clone the repository
 3. Run `docker-compose up -d`
 4. Open `http://localhost:3000` in your web browser
+5. Run Postman, and do a POST request on `http://localhost:8000/import-tmdb/`
+
+
