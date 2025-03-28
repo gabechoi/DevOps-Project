@@ -1,0 +1,60 @@
+.App {
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  height: 100vh; 
+  width: 100%;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  padding-top: 8vh;
+  overflow-y: auto; 
+  width: 100%;
+}
+
+.searchBar {
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  margin: 20px 0;
+  color: Gray;
+  font-size: 18px;
+}
+
+.searchBar input {
+  width: 300px; 
+  margin-left: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.moviesContainer {
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.movieTile {
+  width: 200px;
+  text-align: center;
+}
+
+.movieTile img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.movieTile h3 {
+  margin-top: 10px;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+

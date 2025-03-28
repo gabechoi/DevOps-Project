@@ -1,0 +1,35 @@
+.header {
+    width: 100%;
+    height:  50px;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    background: rgb(175, 175, 175);
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+#bottom{
+    clear:both
+}
+
+a {
+    padding: 2vw;
+    background: none;
+    border: none;
+    color: black;
+    cursor: pointer;
+    font-size: 2rem;
+    transition: color 0.2s ease-in-out;
+    text-decoration: none;
+    font-weight:bold;
+
+}
+
+a:hover  {
+    color: gray;
+}
+
+
