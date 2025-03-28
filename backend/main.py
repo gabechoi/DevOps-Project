@@ -73,8 +73,8 @@ def load_movie_data(filepath, db):
 @app.post("/import-tmdb/")
 def import_tmdb(db: Session = Depends(get_db)):
     try:
-        load_movie_data("/app/movieData/TMDB_movie_dataset_v11.clean.csv", db)
-        return {"message": "TMDB movieData imported successfully!"}
+        load_movie_data("/app/data/TMDB_movie_dataset_v11.clean.csv", db)
+        return {"message": "TMDB data imported successfully!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

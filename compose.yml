@@ -25,7 +25,7 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-      - ./movieData:/app/movieData
+      - ./movieData:/app/data
     depends_on:
       - db
     environment:
