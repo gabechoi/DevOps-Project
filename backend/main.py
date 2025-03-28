@@ -1,9 +1,10 @@
 import pandas as pd
 from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker, Session, relationship, registry
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import os
 
 # Set Up Database connection
@@ -11,6 +12,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+mapper_registry = registry()
 
 # Define models
 class Movie(Base):
@@ -22,6 +24,7 @@ class Movie(Base):
     date = Column(String)
     rating = Column(Float)
     poster = Column(String)
+    favorites = relationship("Favorite", back_populates="movie")
 
 class Favorite(Base):
     __tablename__ = "favorites"
@@ -31,6 +34,7 @@ class Favorite(Base):
     movie = relationship("Movie", back_populates="favorites")
 
 Base.metadata.create_all(bind=engine)
+mapper_registry.configure()
 
 app = FastAPI()
 
@@ -81,7 +85,7 @@ def load_movie_data(filepath, db):
 def import_tmdb(db: Session = Depends(get_db)):
     try:
         load_movie_data("/app/data/TMDB_movie_dataset_v11.clean.csv", db)
-        return {"message": "TMDB data imported successfully!"}
+        return {"message": "TMDB movieData imported successfully!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -93,23 +97,26 @@ def search_movies(query: str, db: Session = Depends(get_db)):
     return movies
 
 
+class FavoriteRequest(BaseModel):
+    movie_id: int
+    user_id: str
 @app.post("/favorites/add")
-def add_to_favorites(movie_id: int, user_id: str, db: Session = Depends(get_db)):
-    movie = db.query(Movie).filter(Movie.id == movie_id).first()
+def add_to_favorites(request: FavoriteRequest, db: Session = Depends(get_db)):
+    movie = db.query(Movie).filter(Movie.id == request.movie_id).first()
     if not movie:
         raise HTTPException(status_code=404, detail="Movie not found")
 
     # Check if already favorited
     existing_favorite = db.query(Favorite).filter(
-        Favorite.movie_id == movie_id,
-        Favorite.user_id == user_id
+        Favorite.movie_id == request.movie_id,
+        Favorite.user_id == request.user_id
     ).first()
 
     if existing_favorite:
         raise HTTPException(status_code=400, detail="Movie already in favorites")
 
     # Create new favorite
-    new_favorite = Favorite(movie_id=movie_id, user_id=user_id)
+    new_favorite = Favorite(movie_id=request.movie_id, user_id=request.user_id)
     db.add(new_favorite)
     db.commit()
     db.refresh(new_favorite)
